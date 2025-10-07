@@ -7,7 +7,8 @@ export class FetchClient {
     this.baseUrl = baseUrl;
   }
 
-  async get<T = unknown>(url: string, { headers = {} }: FetchOptions) {
+  async get<T = unknown>(url: string, options?: FetchOptions) {
+    const { headers } = options ?? {};
     const fetchUrl = this.baseUrl + url;
     return fetch(fetchUrl, { headers, method: "GET" }).then((response) => {
       if (!response.ok) {
@@ -20,9 +21,10 @@ export class FetchClient {
   async post<T = unknown, K = unknown>(
     url: string,
     data: K,
-    { headers = {} }: FetchOptions,
+    options?: FetchOptions
   ) {
     const fetchUrl = this.baseUrl + url;
+    const { headers } = options ?? {};
     return fetch(fetchUrl, {
       headers,
       method: "POST",
@@ -38,9 +40,10 @@ export class FetchClient {
   async put<T = unknown, K = unknown>(
     url: string,
     data: K,
-    { headers = {} }: FetchOptions,
+    options?: FetchOptions
   ) {
     const fetchUrl = this.baseUrl + url;
+    const { headers } = options ?? {};
     return fetch(fetchUrl, {
       headers,
       method: "PUT",
@@ -53,7 +56,8 @@ export class FetchClient {
     });
   }
 
-  async delete<T = unknown>(url: string, { headers = {} }: FetchOptions) {
+  async delete<T = unknown>(url: string, options?: FetchOptions) {
+    const { headers } = options ?? {};
     const fetchUrl = this.baseUrl + url;
     return fetch(fetchUrl, {
       headers,
@@ -69,16 +73,16 @@ export class FetchClient {
   private handleError(statusCode: number, statusText: string) {
     if (statusCode >= 400 && statusCode <= 499) {
       throw new Error(
-        `Client error: [${statusCode}] (${statusText ?? "Unknown"})`,
+        `Client error: [${statusCode}] (${statusText ?? "Unknown"})`
       );
     }
     if (statusCode >= 500 && statusCode <= 599) {
       throw new Error(
-        `Server error: [${statusCode}] (${statusText ?? "Unknown"})`,
+        `Server error: [${statusCode}] (${statusText ?? "Unknown"})`
       );
     }
     throw new Error(
-      `Unknown error: [${statusCode}] (${statusText ?? "Unknown"})`,
+      `Unknown error: [${statusCode}] (${statusText ?? "Unknown"})`
     );
   }
 }
