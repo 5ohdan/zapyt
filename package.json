@@ -1,0 +1,12 @@
+{
+  "name": "zapyt",
+  "version": "1.0.0",
+  "description": "simple lib for fetch",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Bohdan Zakovinko",
+  "repository": "5ohdan/zapyt",
+  "license": "MIT",
+  "packageManager": "pnpm@10.17.1"
+}
