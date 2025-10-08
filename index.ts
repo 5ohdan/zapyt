@@ -4,7 +4,11 @@ export class FetchClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+    if (URL.canParse(baseUrl)) {
+      this.baseUrl = baseUrl;
+    } else {
+      throw new Error("Invalid base URL");
+    }
   }
 
   async get<T = unknown>(url: string, options?: FetchOptions) {
