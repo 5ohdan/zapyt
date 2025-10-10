@@ -8,11 +8,10 @@ export class FetchClient implements FetchClientInterface {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
-    if (URL.canParse(baseUrl)) {
-      this.baseUrl = baseUrl;
-    } else {
+    if (!URL.canParse(baseUrl)) {
       throw new Error("Invalid base URL");
     }
+    this.baseUrl = baseUrl;
   }
 
   async get<T = unknown>(
