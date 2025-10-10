@@ -3,7 +3,7 @@ export type FetchOptions = {
 };
 
 export type FetchResponse<T> = {
-  data: T;
+  data: Promise<T>;
   status: number;
   statusText: string;
 };

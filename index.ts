@@ -29,8 +29,7 @@ export class FetchClient implements FetchClientInterface {
       this.handleError(status, statusText);
     }
 
-    const data = await response.json();
-    return { data, status, statusText };
+    return { data: response.json(), status, statusText };
   }
 
   async post<T = unknown, K = unknown>(
@@ -53,8 +52,7 @@ export class FetchClient implements FetchClientInterface {
       this.handleError(status, statusText);
     }
 
-    const data = await response.json();
-    return { data, status, statusText };
+    return { data: response.json(), status, statusText };
   }
 
   async put<T = unknown, K = unknown>(
@@ -78,8 +76,7 @@ export class FetchClient implements FetchClientInterface {
       this.handleError(status, statusText);
     }
 
-    const data = await response.json();
-    return { data, status, statusText };
+    return { data: response.json(), status, statusText };
   }
 
   async delete<T = unknown>(
@@ -97,8 +94,7 @@ export class FetchClient implements FetchClientInterface {
       this.handleError(status, statusText);
     }
 
-    const data = await response.json();
-    return { data, status, statusText };
+    return { data: response.json(), status, statusText };
   }
 
   private handleError(statusCode: number, statusText: string) {
