@@ -1,6 +1,10 @@
-import type { FetchOptions } from "./types";
+import type {
+  FetchClientInterface,
+  FetchOptions,
+  FetchResponse,
+} from "./types";
 
-export class FetchClient {
+export class FetchClient implements FetchClientInterface {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
@@ -11,67 +15,90 @@ export class FetchClient {
     }
   }
 
-  async get<T = unknown>(url: string, options?: FetchOptions) {
+  async get<T = unknown>(
+    url: string,
+    options?: FetchOptions
+  ): Promise<FetchResponse<T>> {
     const { headers } = options ?? {};
+
     const fetchUrl = this.baseUrl + url;
-    return fetch(fetchUrl, { headers, method: "GET" }).then((response) => {
-      if (!response.ok) {
-        this.handleError(response.status, response.statusText);
-      }
-      return response.json() as Promise<T>;
-    });
+    const response = await fetch(fetchUrl, { headers, method: "GET" });
+
+    const { status, statusText, ok } = response;
+    if (!ok) {
+      this.handleError(status, statusText);
+    }
+
+    const data = await response.json();
+    return { data, status, statusText };
   }
 
   async post<T = unknown, K = unknown>(
     url: string,
-    data: K,
+    payload: K,
     options?: FetchOptions
-  ) {
+  ): Promise<FetchResponse<T>> {
     const fetchUrl = this.baseUrl + url;
     const { headers } = options ?? {};
-    return fetch(fetchUrl, {
+
+    const body = JSON.stringify(payload); // TODO: use superjson?
+    const response = await fetch(fetchUrl, {
       headers,
       method: "POST",
-      body: JSON.stringify(data), // TODO: use superjson?
-    }).then((response) => {
-      if (!response.ok) {
-        this.handleError(response.status, response.statusText);
-      }
-      return response.json() as Promise<T>;
+      body,
     });
+
+    const { status, statusText, ok } = response;
+    if (!ok) {
+      this.handleError(status, statusText);
+    }
+
+    const data = await response.json();
+    return { data, status, statusText };
   }
 
   async put<T = unknown, K = unknown>(
     url: string,
-    data: K,
+    payload: K,
     options?: FetchOptions
-  ) {
+  ): Promise<FetchResponse<T>> {
     const fetchUrl = this.baseUrl + url;
     const { headers } = options ?? {};
-    return fetch(fetchUrl, {
+
+    const body = JSON.stringify(payload); // TODO: use superjson?
+
+    const response = await fetch(fetchUrl, {
       headers,
       method: "PUT",
-      body: JSON.stringify(data), // TODO: use superjson?
-    }).then((response) => {
-      if (!response.ok) {
-        this.handleError(response.status, response.statusText);
-      }
-      return response.json() as Promise<T>;
+      body,
     });
+
+    const { status, statusText, ok } = response;
+    if (!ok) {
+      this.handleError(status, statusText);
+    }
+
+    const data = await response.json();
+    return { data, status, statusText };
   }
 
-  async delete<T = unknown>(url: string, options?: FetchOptions) {
+  async delete<T = unknown>(
+    url: string,
+    options?: FetchOptions
+  ): Promise<FetchResponse<T>> {
     const { headers } = options ?? {};
     const fetchUrl = this.baseUrl + url;
-    return fetch(fetchUrl, {
+    const response = await fetch(fetchUrl, {
       headers,
       method: "DELETE",
-    }).then((response) => {
-      if (!response.ok) {
-        this.handleError(response.status, response.statusText);
-      }
-      return response.json() as Promise<T>;
     });
+    const { status, statusText, ok } = response;
+    if (!ok) {
+      this.handleError(status, statusText);
+    }
+
+    const data = await response.json();
+    return { data, status, statusText };
   }
 
   private handleError(statusCode: number, statusText: string) {
