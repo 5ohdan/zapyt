@@ -3,6 +3,7 @@ import type {
   FetchOptions,
   FetchResponse,
 } from "./types";
+import { handleError, getResponseType } from "./utils";
 
 export class FetchClient implements FetchClientInterface {
   private baseUrl: string;
@@ -25,10 +26,14 @@ export class FetchClient implements FetchClientInterface {
 
     const { status, statusText, ok } = response;
     if (!ok) {
-      this.handleError(status, statusText);
+      handleError(status, statusText);
     }
 
-    return { data: await response.json(), status, statusText };
+    return {
+      data: () => getResponseType<T>(response),
+      status,
+      statusText,
+    };
   }
 
   async post<T = unknown, K = unknown>(
@@ -48,10 +53,14 @@ export class FetchClient implements FetchClientInterface {
 
     const { status, statusText, ok } = response;
     if (!ok) {
-      this.handleError(status, statusText);
+      handleError(status, statusText);
     }
 
-    return { data: await response.json(), status, statusText };
+    return {
+      data: () => getResponseType<T>(response),
+      status,
+      statusText,
+    };
   }
 
   async put<T = unknown, K = unknown>(
@@ -72,10 +81,14 @@ export class FetchClient implements FetchClientInterface {
 
     const { status, statusText, ok } = response;
     if (!ok) {
-      this.handleError(status, statusText);
+      handleError(status, statusText);
     }
 
-    return { data: await response.json(), status, statusText };
+    return {
+      data: () => getResponseType<T>(response),
+      status,
+      statusText,
+    };
   }
 
   async delete<T = unknown>(
@@ -90,25 +103,13 @@ export class FetchClient implements FetchClientInterface {
     });
     const { status, statusText, ok } = response;
     if (!ok) {
-      this.handleError(status, statusText);
+      handleError(status, statusText);
     }
 
-    return { data: await response.json(), status, statusText };
-  }
-
-  private handleError(statusCode: number, statusText: string) {
-    if (statusCode >= 400 && statusCode <= 499) {
-      throw new Error(
-        `Client error: [${statusCode}] (${statusText ?? "Unknown"})`
-      );
-    }
-    if (statusCode >= 500 && statusCode <= 599) {
-      throw new Error(
-        `Server error: [${statusCode}] (${statusText ?? "Unknown"})`
-      );
-    }
-    throw new Error(
-      `Unknown error: [${statusCode}] (${statusText ?? "Unknown"})`
-    );
+    return {
+      data: () => getResponseType<T>(response),
+      status,
+      statusText,
+    };
   }
 }
